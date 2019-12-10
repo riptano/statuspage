@@ -29,11 +29,11 @@ class StatusResource(ReadOnlyFieldNamespacedModelResource):
 
 class IncidentResource(ReadOnlyFieldNamespacedModelResource):
     status = fields.ForeignKey(StatusResource, 'status', full=True, null=True, blank=True)
-    #TODO: We need to include the related user object at some point
 
     def hydrate(self, bundle):
-        u = User.objects.get(username=bundle.request.GET['username'])
+        u = User.objects.get(id=bundle.request.user.id)
         bundle.obj.user = u
+
         return bundle
 
     class Meta:
