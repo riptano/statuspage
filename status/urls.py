@@ -1,7 +1,7 @@
 from django.conf.urls import url, include
 from django.views.decorators.cache import cache_page
 from tastypie.api import NamespacedApi
-from status.api import IncidentResource, StatusResource
+from status.api import IncidentResource, IncidentUpdateResource, StatusResource
 from status.models import Incident
 from status.views import (
     DashboardView, HomeView, IncidentArchiveMonthView, IncidentArchiveYearView, IncidentDeleteView,
@@ -12,6 +12,7 @@ from status.views import (
 v1_api = NamespacedApi(api_name='v1', urlconf_namespace='status')
 v1_api.register(StatusResource())
 v1_api.register(IncidentResource())
+v1_api.register(IncidentUpdateResource())
 
 
 urlpatterns = [
