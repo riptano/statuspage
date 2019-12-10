@@ -15,7 +15,7 @@
     {% if status_level %}
         <p class="alert alert-{{ status_level }}">{% if status_level == 'success' %}There are no known issues at this time{% else %}Some systems are experiencing issues{% endif %}</p>
     {% endif %}
-    {% for incident in incident_list %}
+    {% for incident in active_list %}
         {% include "status/partials/incident.html" with with_callout=True %}
     {% endfor %}
     {% if STATUS_TICKET_URL %}
@@ -26,4 +26,9 @@
         </div>
     </div>
     {% endif %}
+    <hr />
+    <h2>Previous Incidents:</h2>
+    {% for incident in completed_list %}
+        {% include "status/partials/incident.html" with with_callout=True %}
+    {% endfor %}
 {% endblock %}

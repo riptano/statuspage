@@ -191,20 +191,30 @@ class HomeView(TemplateView):
             context.update({'STATUS_TITLE': settings.STATUS_TITLE})
 
         status_level = 'success'
+        active_list = []
+        completed_list = []
         for incident in incident_list:
             try:
                 if incident.get_latest_update().status.type == 'danger':
                     status_level = 'danger'
-                    break
+                    active_list.append(incident)
                 elif incident.get_latest_update().status.type == 'warning':
-                    status_level = 'warning'
-                elif incident.get_latest_update().status.type == 'info' and not status_level == 'warning':
-                    status_level = 'info'
+                    if status_level != 'danger':
+                        status_level = 'warning'
+                    active_list.append(incident)
+                elif incident.get_latest_update().status.type == 'info':
+                    if status_level not in ('warning', 'danger'):
+                        status_level = 'info'
+                    active_list.append(incident)
+                elif incident.get_latest_update().status.type == 'success':
+                    completed_list.append(incident)
             except AttributeError:
                 # Unable to get_latest_update(), 'None' has no .status
                 pass
 
         context.update({
-            'status_level': status_level
+            'status_level': status_level,
+            'active_list': active_list,
+            'completed_list': completed_list,
         })
         return context
