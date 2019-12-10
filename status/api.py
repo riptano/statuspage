@@ -28,7 +28,7 @@ class StatusResource(ReadOnlyFieldNamespacedModelResource):
 
 
 class IncidentResource(ReadOnlyFieldNamespacedModelResource):
-    status = fields.ForeignKey(StatusResource, 'status', full=True, null=True, blank=True)
+    updates = fields.ToManyField('status.api.IncidentUpdateResource', 'incidentupdate_set', full=True, null=True, blank=True, related_name='incident')
 
     def hydrate(self, bundle):
         u = User.objects.get(id=bundle.request.user.id)
@@ -46,8 +46,9 @@ class IncidentResource(ReadOnlyFieldNamespacedModelResource):
         always_return_data = True
         filtering = {
             'created': ALL,
-            'updates': ALL,
+            'updates': ALL_WITH_RELATIONS,
             'status': ALL_WITH_RELATIONS,
+            'updated': ALL,
         }
 
 
