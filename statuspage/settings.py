@@ -1,5 +1,8 @@
 import os
+
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
 import dj_database_url
+import ldap
 
 import logging
 logger = logging.getLogger(__name__)
@@ -122,6 +125,7 @@ TEMPLATE_DIRS = (
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
 AUTHENTICATION_BACKENDS = (
+    'django_auth_ldap.backend.LDAPBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -184,3 +188,18 @@ EMAIL_HOST_USER = os.environ.get('MAIL_USER', None)
 EMAIL_HOST_PASSWORD = os.environ.get('MAIL_PASSWORD', None)
 EMAIL_USE_TLS = os.environ.get('MAIL_TLS', False)
 DEFAULT_FROM_EMAIL = os.environ.get('MAIL_FROM', 'statuspage@unconfigured.org')
+
+AUTH_LDAP_SERVER_URI = os.environ.get('AUTH_LDAP_SERVER_URI')
+AUTH_LDAP_BIND_DN = os.environ.get('AUTH_LDAP_BIND_DN')
+AUTH_LDAP_BIND_PASSWORD = os.environ.get('AUTH_LDAP_BIND_PASSWORD')
+AUTH_LDAP_USER_SEARCH = LDAPSearch(os.environ.get('AUTH_LDAP_USER_SEARCH'),
+                                   ldap.SCOPE_SUBTREE,
+                                   "(uid=%(user)s)")
+
+AUTH_LDAP_GROUP_SEARCH = LDAPSearch(os.environ.get('AUTH_LDAP_GROUP_SEARCH'),
+                                    ldap.SCOPE_SUBTREE,
+                                    "(objectClass=groupOfNames)")
+
+AUTH_LDAP_GROUP_TYPE = GroupOfNamesType()
+
+AUTH_LDAP_REQUIRE_GROUP = os.environ.get('AUTH_LDAP_REQUIRE_GROUP')
