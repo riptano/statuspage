@@ -40,6 +40,10 @@ class IncidentResource(ReadOnlyFieldNamespacedModelResource):
         return bundle
 
     def hydrate(self, bundle):
+        # Force API to not blank out created field
+        if 'id' in bundle.data:
+            bundle.data['created'] = IncidentUpdate.objects.get(id=bundle.data['id']).created
+
         u = User.objects.get(id=bundle.request.user.id)
         bundle.obj.user = u
 
