@@ -30,6 +30,15 @@ class StatusResource(ReadOnlyFieldNamespacedModelResource):
 class IncidentResource(ReadOnlyFieldNamespacedModelResource):
     updates = fields.ToManyField('status.api.IncidentUpdateResource', 'incidentupdate_set', full=True, null=True, blank=True, related_name='incident')
 
+    def dehydrate(self, bundle):
+        bundle.data['user'] = bundle.obj.user.username
+        last_update = bundle.obj.get_latest_update()
+        if last_update:
+            bundle.data['status'] = last_update.status.name
+        else:
+            bundle.data['status'] = None
+        return bundle
+
     def hydrate(self, bundle):
         u = User.objects.get(id=bundle.request.user.id)
         bundle.obj.user = u
